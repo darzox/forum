@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
-    <title>Log in</title>
+    <title>Create post</title>
 </head>
 <body id="body">
     <header >
@@ -13,17 +13,14 @@
             <a class="header__logo logo" href="/">For...<br>umm</a>
     </header>
     <main>
-        <h1 class="visually-hidden">Sign-in page</h1>
-            <form class="form main-sign-in" action="/signup" method="post">
+        <h1 class="visually-hidden">Create post page</h1>
+        <h2 class="latest-post__heading">Create post</h2>
+            <form class="form main-create-post" action="/create-post" method="post">
                 <fieldset>
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username">
+                    <label for="post">Type a text</label>
+                    <textarea name="post" id="post"></textarea>
                 </fieldset>
-                <fieldset>
-                    <label for="password">Password</label>
-                    <input type="password" name="email" id="password">
-                </fieldset>
-                <button class="button" type="submit">Register</button>
+                <button class="button" type="submit">Post</button>
             </form>
     </main>
     <footer class="footer">

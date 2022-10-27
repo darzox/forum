@@ -124,7 +124,12 @@ main::before {
 }
 
 .header__user span {
+    position: fixed;
+    top: 2px;
+    left: 114px;
+
     font-weight: 800;
+    font-size: 40px;
 }
 
 .header__filter {
@@ -316,16 +321,29 @@ html {
     background-color: #000000;
 } 
 
-
-
-
-
-
-
-
-
-
-
-
-
   /*--------------------SIGNUP-----------------*/
+
+
+
+
+
+  /*------------------Create Post--------------*/
+
+.main-create-post {
+    margin-bottom: 50px;
+}
+
+
+.main-create-post textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 300px;
+
+    padding: 10px;
+
+    border: 1px solid #000000;
+    border-radius: 10px; 
+
+}
+
+  /*------------------Create Post--------------*/
