@@ -13,9 +13,9 @@ func Run() {
 
 	mux.HandleFunc("/", handlers.Index)
 	// mux.HandleFunc("/err", err)
-	// mux.HandleFunc("/login", login)
+	mux.HandleFunc("/login", handlers.SignIn)
 	// mux.HandleFunc("/logout", logout)
-	// mux.HandleFunc("/signup", signup)
+	mux.HandleFunc("/signup", handlers.SignUp)
 
 	// mux.HandleFunc("/create-post", createPost)
 	// mux.HandleFunc("/post", post)
