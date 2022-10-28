@@ -347,3 +347,135 @@ html {
 }
 
   /*------------------Create Post--------------*/
+
+
+  /*------------------Post---------------------*/
+  .main-post {
+    margin-top: 50px;
+
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.56);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 20px;
+
+  }
+
+  .main-post .post__info-likes::before {
+    display: none;
+  }
+
+  .main-post .post__footer {
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .main-post .post__info-likes {
+    padding-right: 5px;
+  }
+
+  .main-post .like-up-post {
+    top: 7px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #3fd467;
+  }
+
+  .main-post .like-down-post {
+    top: 7px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #d92a1c;
+  }
+
+
+
+  .comment__item {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.56);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 20px;
+  }
+
+
+.comment__header {
+    display: flex;
+    justify-content: space-between;
+
+    font-style: italic;
+    
+    font-size: 18px;
+    font-weight: 100;
+}
+
+.comment__header span {
+    font-weight: 700;
+}
+
+.comment__header a {
+    color: #3f69d4;
+}
+
+.comment__main a {
+    color: #d92a1c;
+}
+
+.comment__footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;;
+
+    font-size: 16px;
+}
+
+.comment__footer a {
+    color: #3f69d4;
+}
+
+.comment__info-likes {
+    padding-right: 5px;
+}
+
+.like-up-comment {
+    top: 7px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #3fd467;
+  }
+
+.like-down-comment {
+    top: 7px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #d92a1c;
+  }
+
+.new-comment .form {
+    max-width: 900px;
+    width: 100%;
+}
+
+.new-comment textarea {
+    height: 250px;
+    padding: 20px;
+}
+  /*------------------Post---------------------*/
