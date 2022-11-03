@@ -19,7 +19,7 @@ func Run() {
 
 	mux.HandleFunc("/create-post", handlers.CreatePost)
 	mux.HandleFunc("/post", handlers.Post)
-	// mux.HandleFunc("/create-comment", createComment)
+	mux.HandleFunc("/create-comment", handlers.CreateComment)
 
 	server := http.Server{
 		Addr:    "localhost:8080",
