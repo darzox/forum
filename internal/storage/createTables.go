@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func createTables(db *sql.DB) error {
+func CreateTables(db *sql.DB) error {
 	usersTable := `
 	CREATE TABLE user (
 	    user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
