@@ -19,7 +19,7 @@ func RunServer() {
 
 	mux.HandleFunc("/", handlers.Index)
 	// mux.HandleFunc("/err", err)
-	mux.HandleFunc("/signin", handlers.SignIn)
+	// mux.HandleFunc("/signin", handlers.SignIn)
 	mux.HandleFunc("/logout", handlers.Logout)
 	// mux.HandleFunc("/signup", handlers.SignUp)
 
@@ -35,22 +35,18 @@ func RunServer() {
 	}
 	defer db.Close()
 
-	// repos := repository.NewUserRepository(db)
 	repos1 := repository.NewRepository(db)
 
-	// service := service.NewUserService(repos)
 	service1 := service.NewService(repos1)
 
 	control1 := handlers.NewContoller(service1)
-
-	// control := handlers.NewUserController(&service1.UserServ)
 
 	err = storage.CreateTables(db)
 	if err != nil {
 		log.Fatal(err)
 	}
 	mux.Handle("/signup", &control1.SignUp)
-
+	mux.Handle("/signin", &control1.SingIn)
 	mux.HandleFunc("/create-post", handlers.CreatePost)
 	mux.HandleFunc("/post", handlers.Post)
 	mux.HandleFunc("/create-comment", handlers.CreateComment)

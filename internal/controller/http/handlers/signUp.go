@@ -10,7 +10,7 @@ import (
 )
 
 type Registration interface {
-	CreateUser(user *model.User) error
+	RegisterUser(user *model.User) error
 }
 
 type SignUp struct {
@@ -23,7 +23,7 @@ func CreateSignUpHandler(service Registration) *SignUp {
 	}
 }
 
-func (uc *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		t, err := template.ParseFiles("./templates/signupPage.html")
 		if err != nil {
@@ -40,7 +40,7 @@ func (uc *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Username: userInfo["username"][0],
 			Password: userInfo["password"][0],
 		}
-		err := uc.service.CreateUser(&user)
+		err := su.service.RegisterUser(&user)
 		if err != nil {
 			http.Redirect(w, r, "/err", http.StatusSeeOther)
 		}

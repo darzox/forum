@@ -1,15 +1,18 @@
 package service
 
 type Repository interface {
-	UserRepository
+	RegisterUser
+	LoginUser
 }
 
 type Service struct {
-	userService
+	RegisterUserService
+	LoginUserService
 }
 
 func NewService(repo Repository) *Service {
 	return &Service{
-		*NewUserService(repo),
+		*NewRegisterUserService(repo),
+		*NewLoginUserService(repo),
 	}
 }

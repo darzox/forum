@@ -49,3 +49,23 @@ func (ur *userRepository) GetUser(user *model.User) (*model.User, error) {
 	}
 	return &tempUser, err
 }
+
+func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model.User, error) {
+	records := `SELECT username, password
+				FROM user
+				WHERE username = ? OR password = ?
+				LIMIT 1`
+	query, err := ur.db.Prepare(records)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := query.Query(user.Username, user.Password)
+	if err != nil {
+		return nil, err
+	}
+	var tempUser model.User
+	for rows.Next() {
+		rows.Scan(&tempUser.Username, &tempUser.Password)
+	}
+	return &tempUser, err
+}
