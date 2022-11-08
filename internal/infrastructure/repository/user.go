@@ -51,7 +51,7 @@ func (ur *userRepository) GetUser(user *model.User) (*model.User, error) {
 }
 
 func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model.User, error) {
-	records := `SELECT username, password
+	records := `SELECT username, password, user_id
 				FROM user
 				WHERE username = ? OR password = ?
 				LIMIT 1`
@@ -65,7 +65,7 @@ func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model
 	}
 	var tempUser model.User
 	for rows.Next() {
-		rows.Scan(&tempUser.Username, &tempUser.Password)
+		rows.Scan(&tempUser.Username, &tempUser.Password, &tempUser.ID)
 	}
 	return &tempUser, err
 }

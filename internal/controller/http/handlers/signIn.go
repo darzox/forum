@@ -5,12 +5,14 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 
 	"forum/internal/model"
 )
 
 type Authorization interface {
 	LoginUser(user *model.User) (bool, error)
+	SessionCreate(user *model.User) (cookie string, err error)
 }
 
 type SingIn struct {
@@ -41,11 +43,23 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		userLogined, err := si.service.LoginUser(&user)
 		if err != nil {
+			fmt.Println(err)
 			http.Redirect(w, r, "/err", http.StatusSeeOther)
 		}
 		if userLogined {
 			// Create session
-			http.Redirect(w, r, "err", http.StatusSeeOther)
+			cookie, err := si.service.SessionCreate(&user)
+			if err != nil {
+				fmt.Println(err)
+				http.Redirect(w, r, "err", http.StatusSeeOther)
+			}
+			cookieExpiresAt := time.Now().Add(600 * time.Second)
+			http.SetCookie(w, &http.Cookie{
+				Name:    "session-token",
+				Value:   cookie,
+				Expires: cookieExpiresAt,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else {
 			http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		}

@@ -42,6 +42,7 @@ func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		err := su.service.RegisterUser(&user)
 		if err != nil {
+			fmt.Println(err)
 			http.Redirect(w, r, "/err", http.StatusSeeOther)
 		}
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
