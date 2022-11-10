@@ -59,7 +59,7 @@ a {
     display: block;
     box-sizing: border-box;
 
-    width: 100px;
+    width: 150px;
     height: 56px;
     padding: 15px;
 
@@ -120,7 +120,7 @@ main::before {
 .header__user {
     display: flex;
     justify-content: flex-end;
-    width: 205px;
+    width: 255px;
 }
 
 .header__user span {

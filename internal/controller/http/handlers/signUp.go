@@ -34,7 +34,6 @@ func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 		userInfo := r.PostForm
-		fmt.Println(userInfo)
 		user := model.User{
 			Email:    userInfo["email"][0],
 			Username: userInfo["username"][0],

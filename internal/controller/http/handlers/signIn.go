@@ -11,7 +11,7 @@ import (
 )
 
 type Authorization interface {
-	LoginUser(user *model.User) (bool, error)
+	LoginUser(user *model.User) (uint, bool, error)
 	SessionCreate(user *model.User) (cookie string, err error)
 }
 
@@ -41,11 +41,14 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Username: userInfo["username"][0],
 			Password: userInfo["password"][0],
 		}
-		userLogined, err := si.service.LoginUser(&user)
+		fmt.Println(user)
+		fmt.Println("-----")
+		userId, userLogined, err := si.service.LoginUser(&user)
 		if err != nil {
 			fmt.Println(err)
 			http.Redirect(w, r, "/err", http.StatusSeeOther)
 		}
+		user.ID = userId
 		if userLogined {
 			// Create session
 			cookie, err := si.service.SessionCreate(&user)
@@ -55,7 +58,7 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			cookieExpiresAt := time.Now().Add(600 * time.Second)
 			http.SetCookie(w, &http.Cookie{
-				Name:    "session-token",
+				Name:    "Session-token",
 				Value:   cookie,
 				Expires: cookieExpiresAt,
 			})
@@ -65,11 +68,3 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-// func SignIn(w http.ResponseWriter, r *http.Request) {
-// 	t, err := template.ParseFiles("./templates/signinPage.html")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	t.Execute(w, nil)
-// }

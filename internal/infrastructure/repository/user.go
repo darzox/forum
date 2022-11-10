@@ -33,7 +33,7 @@ func (ur *userRepository) CreateUser(user *model.User) error {
 func (ur *userRepository) GetUser(user *model.User) (*model.User, error) {
 	records := `SELECT email, username
 				FROM user
-				WHERE email = ? OR username = ?
+				WHERE email = ? AND username = ?
 				LIMIT 1`
 	query, err := ur.db.Prepare(records)
 	if err != nil {
@@ -53,8 +53,9 @@ func (ur *userRepository) GetUser(user *model.User) (*model.User, error) {
 func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model.User, error) {
 	records := `SELECT username, password, user_id
 				FROM user
-				WHERE username = ? OR password = ?
-				LIMIT 1`
+				WHERE username = ? AND password = ?
+				LIMIT 1
+				`
 	query, err := ur.db.Prepare(records)
 	if err != nil {
 		return nil, err

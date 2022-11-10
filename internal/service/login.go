@@ -1,6 +1,8 @@
 package service
 
-import "forum/internal/model"
+import (
+	"forum/internal/model"
+)
 
 type LoginUser interface {
 	GetUserByUsernameAndPassword(user *model.User) (*model.User, error)
@@ -16,14 +18,10 @@ func NewLoginUserService(repo LoginUser) *LoginUserService {
 	}
 }
 
-func (lus *LoginUserService) LoginUser(user *model.User) (bool, error) {
+func (lus *LoginUserService) LoginUser(user *model.User) (uint, bool, error) {
 	userFromDB, err := lus.repo.GetUserByUsernameAndPassword(user)
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
-
-	if user.Username == userFromDB.Username && user.Password == userFromDB.Password {
-		return true, nil
-	}
-	return false, nil
+	return userFromDB.ID, true, nil
 }
