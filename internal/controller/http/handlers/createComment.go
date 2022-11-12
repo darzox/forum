@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"html/template"
 	"log"
 	"net/http"
-	"text/template"
 )
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {

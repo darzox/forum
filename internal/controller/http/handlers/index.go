@@ -8,7 +8,19 @@ import (
 	"forum/internal/model"
 )
 
-type Index struct{}
+type IndexInterface interface {
+	GetAllPosts() ([]model.PostRepresentation, error)
+}
+
+type Index struct {
+	service IndexInterface
+}
+
+func CreateIndexHandler(serv IndexInterface) *Index {
+	return &Index{
+		service: serv,
+	}
+}
 
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
@@ -20,6 +32,11 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 		return
 	}
+	// allposts, err := i.service.GetAllPosts()
+	// fmt.Println(allposts)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 	t, err := template.ParseFiles("./templates/indexAuthorized.html")
 	if err != nil {
 		fmt.Println(err)

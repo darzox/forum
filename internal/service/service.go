@@ -5,6 +5,8 @@ type Repository interface {
 	LoginUser
 	SessionCreator
 	SessionChecker
+	Post
+	Comment
 }
 
 type Service struct {
@@ -12,6 +14,8 @@ type Service struct {
 	LoginUserService
 	SessionCreateService
 	SessionCheckService
+	PostService
+	CommentService
 }
 
 func NewService(repo Repository) *Service {
@@ -20,5 +24,7 @@ func NewService(repo Repository) *Service {
 		*NewLoginUserService(repo),
 		*NewSessionCreateService(repo),
 		*NewSessionCheckService(repo),
+		*NewPostService(repo),
+		*NewCommentService(repo),
 	}
 }

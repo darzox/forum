@@ -16,6 +16,7 @@ func CreateTables(db *sql.DB) error {
 	postTable := `
 	CREATE TABLE post (
 		post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+		heading TEXT,
 		text TEXT,
 		user_id INTEGER REFERENCES user(user_id)
 	);`
@@ -30,13 +31,15 @@ func CreateTables(db *sql.DB) error {
 	CREATE TABLE post_like (
 		post_like_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 		user_id INTEGER REFERENCES user(user_id),
-		post_id INTEGER REFERENCES post(post_id)
+		post_id INTEGER REFERENCES post(post_id),
+		positive BOOLEAN
 	);`
 	commentLikeTable := `
 	CREATE TABLE comment_like (
 		comment_like_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 		user_id INTEGER REFERENCES user(user_id),
-		comment_id INTEGER REFERENCES comment(comment_id)
+		comment_id INTEGER REFERENCES comment(comment_id),
+		positive BOOLEAN
 	);`
 	categoryTable := `
 		CREATE TABLE category (

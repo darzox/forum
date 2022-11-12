@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"net/http"
+
+	"forum/internal/service"
 )
 
 type Service interface {
@@ -9,6 +11,7 @@ type Service interface {
 	Authorization
 	Auth
 	Leaving
+	service.Post
 }
 
 type Controller struct {
@@ -17,6 +20,8 @@ type Controller struct {
 	SignUp
 	SingIn
 	Middleware
+	CreatePost
+	Post
 }
 
 func NewContoller(serv Service) *Controller {
@@ -26,6 +31,8 @@ func NewContoller(serv Service) *Controller {
 		*CreateSignUpHandler(serv),
 		*CreateSignInHandler(serv),
 		*CreateMiddleware(serv),
+		*CreateCreatePostHandler(serv),
+		*CreatePostHandler(serv),
 	}
 }
 
@@ -41,8 +48,8 @@ func (c *Controller) Run() error {
 	// mux.HandleFunc("/signup", handlers.SignUp)
 	mux.Handle("/signup", &c.SignUp)
 	mux.Handle("/signin", &c.SingIn)
-	mux.HandleFunc("/create-post", CreatePost)
-	mux.HandleFunc("/post", Post)
+	mux.Handle("/create-post", c.AuthMiddleware(c.CreatePost))
+	mux.Handle("/post", c.AuthMiddleware(&c.Post))
 	mux.HandleFunc("/create-comment", CreateComment)
 
 	server := http.Server{

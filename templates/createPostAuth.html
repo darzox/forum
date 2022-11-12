@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="shortcut icon" href="/static/images/download.png" type="image/x-icon">
-    <title>Create post</title>
+    <title>Create post by {{.}}</title>
 </head>
 <body id="body">
     <header >
         <div class="header__wrapper">
-            <a class="header__logo logo" href="/">For...<br>umm</a>
+            <a class="header__logo logo" href="/">For...{{.}}<br>umm</a>
     </header>
     <main>
         <h1 class="visually-hidden">Create post page</h1>
@@ -23,14 +23,14 @@
                 </fieldset>
                 <fieldset>
                     <label for="post">Type a text</label>
-                    <textarea name="post" id="post"></textarea>
+                    <textarea name="text" id="post"></textarea>
                 </fieldset>
                 <button class="button" type="submit">Post</button>
             </form>
     </main>
     <footer class="footer">
         <div class="footer__wrapper">
-            <a class="footer__logo logo" href="/">For...<br>umm</a>
+            <a class="footer__logo logo" href="/">For...{{.}}<br>umm</a>
             <div class="footer__legal">
                 <p>&#169;2022. All rights reserved</p>
             </div>

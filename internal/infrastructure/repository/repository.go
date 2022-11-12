@@ -10,12 +10,16 @@ import (
 type Repository struct {
 	userRepository
 	sessionRepository
+	postRepository
+	commentRepository
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		*NewUserRepository(db),
 		*NewSessionRepository(db),
+		*NewPostRepository(db),
+		*NewCommentRepository(db),
 	}
 }
 

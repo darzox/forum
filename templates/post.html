@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="shortcut icon" href="/static/images/download.png" type="image/x-icon">
-    <title>Forum</title>
+    <title>Post: {{.Post.Heading}}</title>
 </head>
 <body id="body">
     <header >
@@ -21,7 +21,7 @@
             <div class="header__user">
               <a class="button" href="/create-post">Create post</a>
               <a class="button button__signup" href="/logout">Log out</a>
-              <span>ddarzox</span>
+              <span>{{.User.Username}}</span>
             </div>
         </div>
     </header>
@@ -34,12 +34,8 @@
                 <address><span>By:</span><a href="">ddarzox</a></address><time datetime="2022-10-27"> on 27/10/2022</time>
               </header>
               <section class="post__main">
-                <h3>What do you do for fun?</h3>
-                <p class="post__text">Hi, so I like to play games with the kids in my family. I
-                  play games such as hide and seek, Snakes and Ladder and the new ones that they
-                  learn in school. It reminds me of my childhood whenever I spend time with them.
-                  I may also watch comedy shows on YouTube. And sometimes, especially during
-                  family gatherings, I enjoy pranking my cousins</p>
+                <h3>{{.Post.Heading}}</h3>
+                <p class="post__text">{{.Post.Text}}</p>
               </section>
               <footer class="post__footer">
                 <span class="post__info-likes">10</span>
@@ -80,7 +76,7 @@
     </main>
     <footer class="footer">
         <div class="footer__wrapper">
-            <a class="footer__logo logo" href="/">For...<br>umm</a>
+            <a class="footer__logo logo" href="/">For...{{.User.Username}}<br>umm</a>
             <div class="footer__legal">
                 <p>&#169;2022. All rights reserved</p>
             </div>
