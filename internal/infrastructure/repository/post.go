@@ -18,27 +18,27 @@ func NewPostRepository(db *sql.DB) *postRepository {
 }
 
 func (pr *postRepository) GetAllPosts() ([]model.PostRepresentation, error) {
-	records := `SELECT t1.post_id  
-					  t1.text, 
-					  t1.username,
-					  t1.heading 
-					  t2.amount_comments, 
-					  t3.amount_likes
+	records := `SELECT t1.post_id, 
+						t1.text, 
+						t1.username,
+						t1.heading, 
+						t2.amount_comments, 
+						t3.amount_likes
 				FROM 
-					(SELECT post_id, text, username, heading 
-					 FROM post INNER JOIN user
-					 ON post.user_id = user.user_id) AS t1
-					 	INNER JOIN 
-					(SELECT post_id, COUNT(comment_id) AS amount_comments
-					 FROM comment
-					 GROUP BY post_id) AS t2 
-					 	ON t1.post_id = t2.post_id
-						INNER JOIN
-					(SELECT post_id, COUNT(post_like_id) AS amount_likes
-					 FROM post_like
-					 GROUP BY post_id) AS t3 
-					 	ON t2.post_id = t3.post_id;
-				ORDER BY t1.post_id DESC`
+				(SELECT post_id, text, username, heading 
+				FROM post INNER JOIN user
+				ON post.user_id = user.user_id) AS t1
+					LEFT JOIN 
+				(SELECT post_id, COUNT(comment_id) AS amount_comments
+				FROM comment
+				GROUP BY post_id) AS t2 
+					ON t1.post_id = t2.post_id
+					LEFT JOIN
+				(SELECT post_id, COUNT(post_like_id) AS amount_likes
+				FROM post_like
+				GROUP BY post_id) AS t3 
+					ON t2.post_id = t3.post_id
+				ORDER BY t1.post_id DESC;`
 	rows, err := pr.db.Query(records)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,6 @@ func (pr *postRepository) GetAllPosts() ([]model.PostRepresentation, error) {
 		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading, &tempPost.AmountComments, &tempPost.AmountLikes)
 		allPosts = append(allPosts, tempPost)
 	}
-	fmt.Println(allPosts)
 	return allPosts, nil
 }
 

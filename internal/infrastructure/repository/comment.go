@@ -26,3 +26,7 @@ func (cr *commentRepository) CreateComment(userId, postId uint, text string) (ui
 	id, err := result.LastInsertId()
 	return uint(id), err
 }
+
+func (cr *commentRepository) GetAllCommentsByPostId(postId uint) {
+	
+}

@@ -39,6 +39,12 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	info2, err := p.serv.GetAllPosts()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(info2)
+
 	info := struct {
 		User *model.User
 		Post *model.PostRepresentation
