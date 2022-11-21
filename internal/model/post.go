@@ -13,6 +13,7 @@ type PostRepresentation struct {
 	Heading        string
 	Text           string
 	AmountLikes    int
+	AmountDisLikes int
 	AmountComments uint
 	Username       string
 }

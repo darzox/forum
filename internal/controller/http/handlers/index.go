@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"forum/internal/model"
+	"forum/internal/service"
 )
 
 type IndexInterface interface {
@@ -13,17 +14,22 @@ type IndexInterface interface {
 }
 
 type Index struct {
-	service IndexInterface
+	serv service.Post
 }
 
-func CreateIndexHandler(serv IndexInterface) *Index {
+func CreateIndexHandler(serv service.Post) *Index {
 	return &Index{
-		service: serv,
+		serv: serv,
 	}
 }
 
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
+	allposts, err := i.serv.GetAllPosts()
+	fmt.Println(allposts)
+	if err != nil {
+		fmt.Println(err)
+	}
 	if !ok {
 		t, err := template.ParseFiles("./templates/index.html")
 		if err != nil {
@@ -32,11 +38,6 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 		return
 	}
-	// allposts, err := i.service.GetAllPosts()
-	// fmt.Println(allposts)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
 	t, err := template.ParseFiles("./templates/indexAuthorized.html")
 	if err != nil {
 		fmt.Println(err)

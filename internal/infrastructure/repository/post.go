@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"forum/internal/model"
 )
@@ -18,27 +17,32 @@ func NewPostRepository(db *sql.DB) *postRepository {
 }
 
 func (pr *postRepository) GetAllPosts() ([]model.PostRepresentation, error) {
-	records := `SELECT t1.post_id, 
-						t1.text, 
-						t1.username,
-						t1.heading, 
-						t2.amount_comments, 
-						t3.amount_likes
-				FROM 
-				(SELECT post_id, text, username, heading 
-				FROM post INNER JOIN user
-				ON post.user_id = user.user_id) AS t1
-					LEFT JOIN 
-				(SELECT post_id, COUNT(comment_id) AS amount_comments
-				FROM comment
-				GROUP BY post_id) AS t2 
-					ON t1.post_id = t2.post_id
-					LEFT JOIN
-				(SELECT post_id, COUNT(post_like_id) AS amount_likes
+	records := `SELECT t4.post_id,
+						t4.text,
+						t4.username,
+						t4.heading,
+						t4.comments,
+						t5.likes,
+						t5.dislikes
+				FROM (SELECT t1.post_id AS post_id, 
+									t1.text as text, 
+									t1.username as username,
+									t1.heading as heading, 
+									coalesce(t2.amount_comments, 0) AS comments
+							FROM 
+							(SELECT post_id, text, username, heading 
+							FROM post INNER JOIN user
+							ON post.user_id = user.user_id) AS t1
+								LEFT JOIN 
+							(SELECT post_id, COUNT(comment_id) AS amount_comments
+							FROM comment
+							GROUP BY post_id) AS t2 
+								ON t1.post_id = t2.post_id) AS t4
+								LEFT JOIN (SELECT post_id,
+				SUM(CASE WHEN positive = true THEN 1 ELSE 0 END) AS likes,
+				SUM(CASE WHEN positive = false THEN 1 ELSE 0 END) AS dislikes
 				FROM post_like
-				GROUP BY post_id) AS t3 
-					ON t2.post_id = t3.post_id
-				ORDER BY t1.post_id DESC;`
+				GROUP BY post_id) AS t5 ON t4.post_id = t5.post_id`
 	rows, err := pr.db.Query(records)
 	if err != nil {
 		return nil, err
@@ -46,7 +50,7 @@ func (pr *postRepository) GetAllPosts() ([]model.PostRepresentation, error) {
 	var tempPost model.PostRepresentation
 	var allPosts []model.PostRepresentation
 	for rows.Next() {
-		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading, &tempPost.AmountComments, &tempPost.AmountLikes)
+		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading, &tempPost.AmountComments, &tempPost.AmountLikes, &tempPost.AmountDisLikes)
 		allPosts = append(allPosts, tempPost)
 	}
 	return allPosts, nil
@@ -68,10 +72,33 @@ func (pr *postRepository) CreatePost(heading string, text string, userId uint) (
 }
 
 func (pr *postRepository) GetPostById(postId uint) (*model.PostRepresentation, error) {
-	records := `SELECT post_id, text, username, heading 
-				FROM post INNER JOIN user
-				ON post.user_id = user.user_id
-				WHERE post_id = ?`
+	records := `SELECT t4.post_id,
+	t4.text,
+	t4.username,
+	t4.heading,
+	t4.comments,
+	t5.likes,
+	t5.dislikes
+FROM (SELECT t1.post_id AS post_id, 
+				t1.text as text, 
+				t1.username as username,
+				t1.heading as heading, 
+				coalesce(t2.amount_comments, 0) AS comments
+		FROM 
+		(SELECT post_id, text, username, heading 
+		FROM post INNER JOIN user
+		ON post.user_id = user.user_id) AS t1
+			LEFT JOIN 
+		(SELECT post_id, COUNT(comment_id) AS amount_comments
+		FROM comment
+		GROUP BY post_id) AS t2 
+			ON t1.post_id = t2.post_id) AS t4
+			LEFT JOIN (SELECT post_id,
+SUM(CASE WHEN positive = true THEN 1 ELSE 0 END) AS likes,
+SUM(CASE WHEN positive = false THEN 1 ELSE 0 END) AS dislikes
+FROM post_like
+GROUP BY post_id) AS t5 ON t4.post_id = t5.post_id
+				WHERE t4.post_id = ?`
 	rows, err := pr.db.Query(records, postId)
 	if err != nil {
 		return nil, err
@@ -80,18 +107,5 @@ func (pr *postRepository) GetPostById(postId uint) (*model.PostRepresentation, e
 	for rows.Next() {
 		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading)
 	}
-	fmt.Println(tempPost)
-	records = `SELECT (SELECT count(positive)
-				FROM post_like
-				WHERE positive = true AND post_id= ?) - (SELECT count(positive) FROM post_like WHERE positive = false AND post_id= ?)`
-	rows, err = pr.db.Query(records, postId, postId)
-	if err != nil {
-		return nil, err
-	}
-	var CountLikes int
-	for rows.Next() {
-		rows.Scan(&CountLikes)
-	}
-	tempPost.AmountLikes = CountLikes
 	return &tempPost, nil
 }

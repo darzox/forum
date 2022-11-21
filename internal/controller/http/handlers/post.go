@@ -53,7 +53,12 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Post: post,
 	}
 	fmt.Println(info.User, info.Post)
-	t, err := template.ParseFiles("./templates/post.html")
+	// function inside template
+	t, err := template.New("post.html").Funcs(template.FuncMap{
+		"sub": func(a, b int) int {
+			return a - b
+		},
+	}).ParseFiles("./templates/post.html")
 	if err != nil {
 		fmt.Println()
 	}

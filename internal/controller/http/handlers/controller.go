@@ -26,7 +26,7 @@ type Controller struct {
 
 func NewContoller(serv Service) *Controller {
 	return &Controller{
-		Index{},
+		*CreateIndexHandler(serv),
 		*CreateLogoutHandler(serv),
 		*CreateSignUpHandler(serv),
 		*CreateSignInHandler(serv),
@@ -41,7 +41,7 @@ func (c *Controller) Run() error {
 	fileServer := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.Handle("/", c.AuthMiddleware(c.Index))
+	mux.Handle("/", c.AuthMiddleware(&c.Index))
 	// mux.HandleFunc("/err", err)
 	// mux.HandleFunc("/signin", handlers.SignIn)
 	mux.Handle("/logout", &c.Logout)
