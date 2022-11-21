@@ -22,8 +22,8 @@ func (pr *postRepository) GetAllPosts() ([]model.PostRepresentation, error) {
 						t4.username,
 						t4.heading,
 						t4.comments,
-						t5.likes,
-						t5.dislikes
+						coalesce(t5.likes,0),
+						coalesce(t5.dislikes,0)
 				FROM (SELECT t1.post_id AS post_id, 
 									t1.text as text, 
 									t1.username as username,
@@ -77,8 +77,8 @@ func (pr *postRepository) GetPostById(postId uint) (*model.PostRepresentation, e
 	t4.username,
 	t4.heading,
 	t4.comments,
-	t5.likes,
-	t5.dislikes
+	coalesce(t5.likes,0),
+	coalesce(t5.dislikes,0)
 FROM (SELECT t1.post_id AS post_id, 
 				t1.text as text, 
 				t1.username as username,
