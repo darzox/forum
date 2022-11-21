@@ -38,7 +38,11 @@ func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		http.Redirect(w, r, "/err", http.StatusSeeOther)
 	}
-	t, err := template.ParseFiles("./templates/index.html")
+	t, err := template.New("index.html").Funcs(template.FuncMap{
+		"sub": func(a, b int) int {
+			return a - b
+		},
+	}).ParseFiles("./templates/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}

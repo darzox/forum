@@ -27,20 +27,35 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	allposts, err := i.serv.GetAllPosts()
 	fmt.Println(allposts)
+	info := struct {
+		User  *model.User
+		Posts []model.PostRepresentation
+	}{
+		User:  user,
+		Posts: allposts,
+	}
 	if err != nil {
 		fmt.Println(err)
 	}
 	if !ok {
-		t, err := template.ParseFiles("./templates/index.html")
+		t, err := template.New("index.html").Funcs(template.FuncMap{
+			"sub": func(a, b int) int {
+				return a - b
+			},
+		}).ParseFiles("./templates/index.html")
 		if err != nil {
 			fmt.Println(err)
 		}
-		t.Execute(w, nil)
+		t.Execute(w, info)
 		return
 	}
-	t, err := template.ParseFiles("./templates/indexAuthorized.html")
+	t, err := template.New("indexAuthorized.html").Funcs(template.FuncMap{
+		"sub": func(a, b int) int {
+			return a - b
+		},
+	}).ParseFiles("./templates/indexAuthorized.html")
 	if err != nil {
 		fmt.Println(err)
 	}
-	t.Execute(w, user.Username)
+	t.Execute(w, info)
 }

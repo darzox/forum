@@ -7,8 +7,9 @@ type Comment struct {
 }
 
 type CommentRepresentation struct {
-	CommentId uint
-	Text      string
-	Like      int
-	Username  string
+	CommentId      uint
+	Text           string
+	AmountLikes    int
+	AmountDisLikes int
+	Username       string
 }

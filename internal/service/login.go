@@ -23,5 +23,8 @@ func (lus *LoginUserService) LoginUser(user *model.User) (uint, bool, error) {
 	if err != nil {
 		return 0, false, err
 	}
-	return userFromDB.ID, true, nil
+	if user.Username == userFromDB.Username && user.Password == userFromDB.Password {
+		return userFromDB.ID, true, nil
+	}
+	return 0, false, err
 }

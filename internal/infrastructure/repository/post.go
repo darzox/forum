@@ -105,7 +105,7 @@ GROUP BY post_id) AS t5 ON t4.post_id = t5.post_id
 	}
 	var tempPost model.PostRepresentation
 	for rows.Next() {
-		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading)
+		rows.Scan(&tempPost.PostId, &tempPost.Text, &tempPost.Username, &tempPost.Heading, &tempPost.AmountComments, &tempPost.AmountLikes, &tempPost.AmountDisLikes)
 	}
 	return &tempPost, nil
 }

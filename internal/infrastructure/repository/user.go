@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 
 	"forum/internal/model"
 )
@@ -54,7 +55,6 @@ func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model
 	records := `SELECT username, password, user_id
 				FROM user
 				WHERE username = ? AND password = ?
-				LIMIT 1
 				`
 	query, err := ur.db.Prepare(records)
 	if err != nil {
@@ -68,5 +68,6 @@ func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model
 	for rows.Next() {
 		rows.Scan(&tempUser.Username, &tempUser.Password, &tempUser.ID)
 	}
+	fmt.Println(&tempUser)
 	return &tempUser, err
 }

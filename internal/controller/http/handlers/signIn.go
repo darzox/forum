@@ -48,6 +48,7 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			http.Redirect(w, r, "/err", http.StatusSeeOther)
 		}
+		fmt.Println(userLogined)
 		user.ID = userId
 		if userLogined {
 			// Create session
