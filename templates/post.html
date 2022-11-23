@@ -21,9 +21,14 @@
         <a href="">Category</a>
       </div>
       <div class="header__user">
-        <a class="button" href="/create-post">Create post</a>
-        <a class="button button__signup" href="/logout">Log out</a>
-        <span>{{.User.Username}}</span>
+        {{ if .Auth}}
+          <a class="button" href="/create-post">Create post</a>
+          <a class="button button__signup" href="/logout">Log out</a>
+          <span>{{.User.Username}}</span>
+        {{else}}
+          <a class="button button__login" href="/signin">Log In</a>
+          <a class="button button__signup" href="/signup">Sign Up</a>
+        {{end}}
       </div>
     </div>
   </header>
@@ -71,14 +76,20 @@
             <label for="comment">Type a comment</label>
             <textarea name="comment" id="comment"></textarea>
           </fieldset>
-          <button class="button" type="submit">Post</button>
+          <input type="hidden" name="postId" value="{{.Post.PostId}}">
+          <input type="hidden" name="userId" value="{{.User.ID}}">
+          <button class="button" type="submit">Comment</button>
         </form>
       </section>
     </div>
   </main>
   <footer class="footer">
     <div class="footer__wrapper">
+      {{if .Auth}}
       <a class="footer__logo logo" href="/">For...{{.User.Username}}<br>umm</a>
+      {{else}}
+      <a class="footer__logo logo" href="/">For...<br>umm</a>
+      {{end}}
       <div class="footer__legal">
         <p>&#169;2022. All rights reserved</p>
       </div>

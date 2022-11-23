@@ -34,20 +34,33 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	info := struct {
 		User *model.User
 		Post *model.PostRepresentation
+		Auth bool
 	}{
 		User: user,
 		Post: post,
+		Auth: true,
 	}
 	if !ok {
+		fmt.Println("aaaaaaaaaa")
+		info1 := struct {
+			Post *model.PostRepresentation
+			Auth bool
+		}{
+			Post: post,
+			Auth: false,
+		}
 		t, err := template.New("post.html").Funcs(template.FuncMap{
 			"sub": func(a, b int) int {
 				return a - b
 			},
 		}).ParseFiles("./templates/post.html")
 		if err != nil {
-			fmt.Println()
+			fmt.Println(err)
 		}
-		t.Execute(w, info)
+		err = t.Execute(w, info1)
+		if err != nil {
+			fmt.Println(err)
+		}
 		return
 	}
 	fmt.Println(info.User, info.Post)

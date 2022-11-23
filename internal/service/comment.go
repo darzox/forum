@@ -17,5 +17,3 @@ func NewCommentService(repo Comment) *CommentService {
 func (cs *CommentService) CreateComment(userId, postId uint, text string) (uint, error) {
 	return cs.repo.CreateComment(userId, postId, text)
 }
-
-

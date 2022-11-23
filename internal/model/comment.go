@@ -12,4 +12,6 @@ type CommentRepresentation struct {
 	AmountLikes    int
 	AmountDisLikes int
 	Username       string
+	UserId         uint
+	PostId         uint
 }

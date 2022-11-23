@@ -12,6 +12,7 @@ type Service interface {
 	Auth
 	Leaving
 	service.Post
+	service.Comment
 }
 
 type Controller struct {
@@ -22,6 +23,7 @@ type Controller struct {
 	Middleware
 	CreatePost
 	Post
+	CreateComment
 }
 
 func NewContoller(serv Service) *Controller {
@@ -33,6 +35,7 @@ func NewContoller(serv Service) *Controller {
 		*CreateMiddleware(serv),
 		*CreateCreatePostHandler(serv),
 		*CreatePostHandler(serv),
+		*CreateCommentHandler(serv),
 	}
 }
 
@@ -50,7 +53,7 @@ func (c *Controller) Run() error {
 	mux.Handle("/signin", &c.SingIn)
 	mux.Handle("/create-post", c.AuthMiddleware(c.CreatePost))
 	mux.Handle("/post", c.AuthMiddleware(&c.Post))
-	mux.HandleFunc("/create-comment", CreateComment)
+	mux.Handle("/create-comment", &c.CreateComment)
 
 	server := http.Server{
 		Addr:    "localhost:8081",
