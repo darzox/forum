@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 
 	"forum/internal/model"
 )
@@ -59,10 +60,14 @@ func (cr *commentRepository) GetAllCommentsByPostId(postId uint) ([]model.Commen
 	if err != nil {
 		return nil, err
 	}
-	var tempComment model.CommentRepresentation
 	var allComments []model.CommentRepresentation
 	for rows.Next() {
-		rows.Scan(&tempComment.CommentId, &tempComment.Text, &tempComment.Username, &tempComment.PostId, &tempComment.AmountLikes, &tempComment.AmountDisLikes)
+		var tempComment model.CommentRepresentation
+		err := rows.Scan(&tempComment.CommentId, &tempComment.Text, &tempComment.UserId, &tempComment.Username, &tempComment.PostId, &tempComment.AmountLikes, &tempComment.AmountDisLikes)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		allComments = append(allComments, tempComment)
 	}
 	return allComments, nil

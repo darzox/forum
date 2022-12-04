@@ -1,7 +1,10 @@
 package service
 
+import "forum/internal/model"
+
 type Comment interface {
 	CreateComment(userId, postId uint, text string) (uint, error)
+	GetAllCommentsByPostId(postId uint) ([]model.CommentRepresentation, error)
 }
 
 type CommentService struct {
@@ -16,4 +19,8 @@ func NewCommentService(repo Comment) *CommentService {
 
 func (cs *CommentService) CreateComment(userId, postId uint, text string) (uint, error) {
 	return cs.repo.CreateComment(userId, postId, text)
+}
+
+func (cs *CommentService) GetAllCommentsByPostId(postId uint) ([]model.CommentRepresentation, error) {
+	return cs.repo.GetAllCommentsByPostId(postId)
 }

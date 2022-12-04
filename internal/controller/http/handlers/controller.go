@@ -13,6 +13,7 @@ type Service interface {
 	Leaving
 	service.Post
 	service.Comment
+	service.React
 }
 
 type Controller struct {
@@ -24,6 +25,7 @@ type Controller struct {
 	CreatePost
 	Post
 	CreateComment
+	React
 }
 
 func NewContoller(serv Service) *Controller {
@@ -36,6 +38,7 @@ func NewContoller(serv Service) *Controller {
 		*CreateCreatePostHandler(serv),
 		*CreatePostHandler(serv),
 		*CreateCommentHandler(serv),
+		*CreateReactHandler(serv),
 	}
 }
 
@@ -43,12 +46,10 @@ func (c *Controller) Run() error {
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
+	mux.Handle("/likeup", c.AuthMiddleware(c.React))
+	mux.Handle("/likedown", c.AuthMiddleware(c.React))
 	mux.Handle("/", c.AuthMiddleware(&c.Index))
-	// mux.HandleFunc("/err", err)
-	// mux.HandleFunc("/signin", handlers.SignIn)
 	mux.Handle("/logout", &c.Logout)
-	// mux.HandleFunc("/signup", handlers.SignUp)
 	mux.Handle("/signup", &c.SignUp)
 	mux.Handle("/signin", &c.SingIn)
 	mux.Handle("/create-post", c.AuthMiddleware(c.CreatePost))

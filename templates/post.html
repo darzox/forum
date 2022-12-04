@@ -38,38 +38,43 @@
       <section class="main-post">
         <article class="post">
           <header class="post__header">
-            <address><span>By:</span><a href="">ddarzox</a></address><time datetime="2022-10-27"></time>
+            <address><span>By: </span><a href="">{{.Post.Username}}</a></address><time datetime="2022-10-27"></time>
           </header>
           <section class="post__main">
             <h3>{{.Post.Heading}}</h3>
             <p class="post__text">{{.Post.Text}}</p>
           </section>
           <footer class="post__footer">
-            <span class="post__info-likes">{{ sub .Post.AmountLikes .Post.AmountDisLikes}}</span>
-            <a class="like-up-post" href="/likeup"></a>
-            <a class="like-down-post" href="/likedown"></a>
+            <span class="post__info-likes">Likes: {{ sub .Post.AmountLikes .Post.AmountDisLikes}}</span>
+            {{if .Auth}}
+            <a class="like-up-post" href="/likeup?postId={{.Post.PostId}}&positive=true&reactTo=post"></a>
+            <a class="like-down-post" href="/likedown?postId={{.Post.PostId}}&positive=false&reactTo=post"></a>
+            {{end}}
           </footer>
         </article>
       </section>
       <section class="main-comments">
         <ul class="comments__list">
+          {{range .Comments}}
           <li class="comment__item">
             <article class="comment">
               <header class="comment__header">
-                <address><span>By:</span><a href="">steaLord</a></address><time datetime="2022-10-28"></time>
+                <address><span>By: </span><a href="">{{.Username}}</a></address><time datetime="2022-10-28"></time>
               </header>
               <section class="comment__main">
-                <p class="comment__text">STFU and learn Flutter</p>
+                <p class="comment__text">{{.Text}}</p>
               </section>
               <footer class="comment__footer">
-                <span class="comment__info-likes">1</span>
-                <a class="like-up-comment" href="/likeup"></a>
-                <a class="like-down-comment" href="/likedown"></a>
+                <span class="comment__info-likes">{{sub .AmountLikes .AmountDisLikes}}</span>
+                <a class="like-up-post" href="/likeup"></a>
+                <a class="like-down-post" href="/likedown"></a>
               </footer>
             </article>
           </li>
+          {{end}}
         </ul>
       </section>
+      {{if .Auth}}
       <section class="new-comment">
         <form class="form main-create-new-comment" action="/create-comment" method="post">
           <fieldset>
@@ -81,6 +86,7 @@
           <button class="button" type="submit">Comment</button>
         </form>
       </section>
+      {{end}}
     </div>
   </main>
   <footer class="footer">

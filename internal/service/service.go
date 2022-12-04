@@ -7,6 +7,7 @@ type Repository interface {
 	SessionChecker
 	Post
 	Comment
+	React
 }
 
 type Service struct {
@@ -16,6 +17,7 @@ type Service struct {
 	SessionCheckService
 	PostService
 	CommentService
+	ReactService
 }
 
 func NewService(repo Repository) *Service {
@@ -26,5 +28,6 @@ func NewService(repo Repository) *Service {
 		*NewSessionCheckService(repo),
 		*NewPostService(repo),
 		*NewCommentService(repo),
+		*NewReacttService(repo),
 	}
 }

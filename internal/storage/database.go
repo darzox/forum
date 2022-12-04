@@ -1,13 +1,11 @@
 package storage
 
 import (
-	"fmt"
-
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func RunDb() {
-	fmt.Println("aaa")
+	// fmt.Println("aaa")
 	// file, err := os.Create("database.db")
 	// if err != nil {
 	// 	log.Fatal(err)

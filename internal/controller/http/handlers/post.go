@@ -7,11 +7,10 @@ import (
 	"text/template"
 
 	"forum/internal/model"
-	"forum/internal/service"
 )
 
 type Post struct {
-	serv service.Post
+	serv Service
 }
 
 func CreatePostHandler(serv Service) *Post {
@@ -22,7 +21,6 @@ func CreatePostHandler(serv Service) *Post {
 
 func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
-	fmt.Println(user)
 	postIdSting := r.URL.Query().Get("id")
 	postId64, _ := strconv.ParseUint(postIdSting, 10, 32)
 	postId := uint(postId64)
@@ -31,23 +29,31 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	comments, err := p.serv.GetAllCommentsByPostId(1)
+	if err != nil {
+		fmt.Println(err)
+	}
 	info := struct {
-		User *model.User
-		Post *model.PostRepresentation
-		Auth bool
+		User     *model.User
+		Post     *model.PostRepresentation
+		Auth     bool
+		Comments []model.CommentRepresentation
 	}{
-		User: user,
-		Post: post,
-		Auth: true,
+		User:     user,
+		Post:     post,
+		Auth:     true,
+		Comments: comments,
 	}
 	if !ok {
 		fmt.Println("aaaaaaaaaa")
 		info1 := struct {
-			Post *model.PostRepresentation
-			Auth bool
+			Post     *model.PostRepresentation
+			Auth     bool
+			Comments []model.CommentRepresentation
 		}{
-			Post: post,
-			Auth: false,
+			Post:     post,
+			Auth:     false,
+			Comments: comments,
 		}
 		t, err := template.New("post.html").Funcs(template.FuncMap{
 			"sub": func(a, b int) int {
@@ -63,7 +69,6 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Println(info.User, info.Post)
 	// function inside template
 	t, err := template.New("post.html").Funcs(template.FuncMap{
 		"sub": func(a, b int) int {

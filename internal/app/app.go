@@ -15,13 +15,13 @@ func Run() {
 	}
 	defer db.Close()
 
-	repos1 := repository.NewRepository(db)
+	repos := repository.NewRepository(db)
 
-	service1 := service.NewService(repos1)
+	service := service.NewService(repos)
 
-	control1 := handlers.NewContoller(service1)
+	control := handlers.NewContoller(service)
 
-	if err := control1.Run(); err != nil {
+	if err := control.Run(); err != nil {
 		fmt.Println(err)
 	}
 }

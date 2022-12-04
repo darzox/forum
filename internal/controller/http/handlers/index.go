@@ -26,7 +26,6 @@ func CreateIndexHandler(serv service.Post) *Index {
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	allposts, err := i.serv.GetAllPosts()
-	fmt.Println(allposts)
 	info := struct {
 		User  *model.User
 		Posts []model.PostRepresentation
