@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{{$authPerson := .Auth}}
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -65,9 +65,11 @@
                 <p class="comment__text">{{.Text}}</p>
               </section>
               <footer class="comment__footer">
-                <span class="comment__info-likes">{{sub .AmountLikes .AmountDisLikes}}</span>
-                <a class="like-up-post" href="/likeup"></a>
-                <a class="like-down-post" href="/likedown"></a>
+                <span class="comment__info-likes">Likes: {{sub .AmountLikes .AmountDisLikes}}</span>
+                {{if $authPerson}}
+                <a class="like-up-post" href="/likeup?postId={{.PostId}}&commentId={{.CommentId}}&positive=true&reactTo=comment"></a>
+                <a class="like-down-post" href="/likedown?postId={{.PostId}}&commentId={{.CommentId}}&positive=false&reactTo=comment"></a>
+                {{end}}
               </footer>
             </article>
           </li>

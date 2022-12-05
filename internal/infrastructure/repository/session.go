@@ -30,6 +30,26 @@ func (sr *sessionRepository) CreateSession(cookie string, userId uint) error {
 	return nil
 }
 
+func (sr *sessionRepository) RetrieveSessionByUserId(userId uint) (string, error) {
+	records := `SELECT cookie
+				FROM session
+				WHERE user_id = ?
+				LIMIT 1`
+	query, err := sr.db.Prepare(records)
+	if err != nil {
+		return "", err
+	}
+	rows, err := query.Query(userId)
+	if err != nil {
+		return "", err
+	}
+	var tempCookie string
+	for rows.Next() {
+		rows.Scan(&tempCookie)
+	}
+	return tempCookie, nil
+}
+
 func (sr *sessionRepository) RetrieveSession(cookie string) (string, error) {
 	records := `SELECT cookie
 				FROM session
@@ -80,7 +100,7 @@ func (sr *sessionRepository) DeleteSessionByUserId(userId uint) error {
 	if err != nil {
 		return err
 	}
-	
+
 	_, err = query.Exec(userId)
 	if err != nil {
 		return err

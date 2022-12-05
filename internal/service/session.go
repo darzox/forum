@@ -10,6 +10,7 @@ import (
 
 type SessionCreator interface {
 	CreateSession(cookie string, userId uint) error
+	DeleteSessionByUserId(userId uint) error
 }
 
 type SessionCreateService struct {
@@ -24,6 +25,10 @@ func NewSessionCreateService(repo SessionCreator) *SessionCreateService {
 
 func (scs *SessionCreateService) SessionCreate(user *model.User) (cookie string, err error) {
 	cookieString := uuid.New().String()
+	err = scs.repo.DeleteSessionByUserId(user.ID)
+	if err != nil {
+		return "", err
+	}
 	err = scs.repo.CreateSession(cookieString, user.ID)
 	if err != nil {
 		return "", err

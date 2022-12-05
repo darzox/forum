@@ -42,8 +42,8 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if postOrComment == "comment" {
 		postIdString := r.Form["postId"][0]
-		postId, err := strconv.Atoi(r.Form["postId"][0])
-		postIdUint := uint(postId)
+		commentId, err := strconv.Atoi(r.Form["commentId"][0])
+		commentIdUint := uint(commentId)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -51,7 +51,8 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		re.serv.React(postOrComment, user.ID, postIdUint, positive)
+		fmt.Println(postOrComment, user.ID, commentIdUint, positive)
+		re.serv.React(postOrComment, user.ID, commentIdUint, positive)
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
 	}
 }

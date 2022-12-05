@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
+	"os"
 
 	"forum/internal/storage"
 )
@@ -25,11 +27,13 @@ func NewRepository(db *sql.DB) *Repository {
 }
 
 func RunDb() (*sql.DB, error) {
-	// file, err := os.Create("database.db")
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer file.Close()
+	if _, err := os.Stat("database.db"); errors.Is(err, os.ErrNotExist) {
+		file, err := os.Create("database.db")
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+	}
 	db, err := sql.Open("sqlite3", "database.db")
 	if err != nil {
 		return nil, err

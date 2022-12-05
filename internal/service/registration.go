@@ -27,6 +27,7 @@ func (rus *RegisterUserService) RegisterUser(user *model.User) error {
 		return err
 	}
 	if userFromDB.Email == user.Email || userFromDB.Username == user.Username {
+		fmt.Println("aaa")
 		return fmt.Errorf("user already exists")
 	}
 	return rus.repo.CreateUser(user)
