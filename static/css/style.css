@@ -506,3 +506,21 @@ html {
 }
   /*------------------Post---------------------*/
 
+
+
+select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+select option {
+    margin-bottom: 5px;
+}
+
+.form label {
+    margin-left: 10px;
+}

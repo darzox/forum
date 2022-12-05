@@ -29,7 +29,7 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	comments, err := p.serv.GetAllCommentsByPostId(1)
+	comments, err := p.serv.GetAllCommentsByPostId(postId)
 	if err != nil {
 		fmt.Println(err)
 	}

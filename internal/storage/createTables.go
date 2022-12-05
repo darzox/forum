@@ -49,9 +49,8 @@ func CreateTables(db *sql.DB) error {
 	postCategoryTable := `
 	CREATE TABLE IF NOT EXISTS post_category (
 		post_category_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-		post_id INTEGER REFERENCES post(post_id),
-		category_id INTEGER REFERENCES category(category_id)
-
+		post_id INTEGER,
+		category_id INTEGER
 	);`
 	sessionTable := `
 	CREATE TABLE IF NOT EXISTS session (
@@ -66,6 +65,17 @@ func CreateTables(db *sql.DB) error {
 			return err
 		}
 		_, err = query.Exec()
+		if err != nil {
+			return err
+		}
+	}
+	categories := []string{"Discussions", "Questions", "Ideas", "Articles", "Events", "Issues"}
+	for _, category := range categories {
+		query, err := db.Prepare(`INSERT INTO category(category_name) VALUES(?);`)
+		if err != nil {
+			return err
+		}
+		_, err = query.Exec(category)
 		if err != nil {
 			return err
 		}

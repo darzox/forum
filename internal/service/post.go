@@ -6,6 +6,7 @@ type Post interface {
 	GetAllPosts() ([]model.PostRepresentation, error)
 	CreatePost(heading string, text string, userId uint) (uint, error)
 	GetPostById(postId uint) (*model.PostRepresentation, error)
+	AddCategoryToPost(categoryId uint, postId uint) (uint, error)
 }
 
 type PostService struct {
@@ -30,3 +31,6 @@ func (ps *PostService) GetPostById(postId uint) (*model.PostRepresentation, erro
 	return ps.repo.GetPostById(postId)
 }
 
+func (ps *PostService) AddCategoryToPost(categoryId uint, postId uint) (uint, error) {
+	return ps.repo.AddCategoryToPost(categoryId, postId)
+}

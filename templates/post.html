@@ -38,7 +38,12 @@
       <section class="main-post">
         <article class="post">
           <header class="post__header">
-            <address><span>By: </span><a href="">{{.Post.Username}}</a></address><time datetime="2022-10-27"></time>
+            <address><span>By: </span><a href="">{{.Post.Username}}</a></address>
+            <div class="post__categories">
+              {{range .Post.Categories}}
+              <span>{{.}}</span>
+              {{end}}
+            </div>
           </header>
           <section class="post__main">
             <h3>{{.Post.Heading}}</h3>
@@ -81,7 +86,7 @@
         <form class="form main-create-new-comment" action="/create-comment" method="post">
           <fieldset>
             <label for="comment">Type a comment</label>
-            <textarea name="comment" id="comment"></textarea>
+            <textarea required name="comment" id="comment"></textarea>
           </fieldset>
           <input type="hidden" name="postId" value="{{.Post.PostId}}">
           <input type="hidden" name="userId" value="{{.User.ID}}">

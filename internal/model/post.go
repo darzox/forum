@@ -16,4 +16,5 @@ type PostRepresentation struct {
 	AmountDisLikes int
 	AmountComments uint
 	Username       string
+	Categories     []string
 }

@@ -41,6 +41,14 @@ func (cp CreatePost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Text:    postInfo["text"][0],
 		}
 		postId, err := cp.serv.CreatePost(post.Heading, post.Text, user.ID)
+		categories := postInfo["category"]
+		for _, categoryId := range categories {
+			categoryIdUint, _ := strconv.ParseUint(categoryId, 10, 32)
+			_, err := cp.serv.AddCategoryToPost(uint(categoryIdUint), postId)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
 		postIdString := strconv.FormatUint(uint64(postId), 10)
 		if err != nil {
 			fmt.Println(err)

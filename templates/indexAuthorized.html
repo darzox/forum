@@ -39,7 +39,12 @@
                       <li class="latest-posts__item">
                           <article class="post">
                             <header class="post__header">
-                              <address><span>By:</span><a href="">{{.Username}}</a></address><time datetime=""></time>
+                              <address><span>By:</span><a href="">{{.Username}}</a></address>
+                              <div class="post__categories">
+                                {{range .Categories}}
+                                <span>{{.}}</span>
+                                {{end}}
+                              </div>
                             </header>
                             <section class="post__main">
                               <h3>{{.Heading}}</h3>

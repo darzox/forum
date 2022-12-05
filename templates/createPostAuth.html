@@ -19,11 +19,22 @@
             <form class="form main-create-post" action="/create-post" method="post">
                 <fieldset>
                     <label for="heading">Heading</label>
-                    <input type="text" name="heading" id="heading"></input>
+                    <input required type="text" name="heading" id="heading"></input>
                 </fieldset>
                 <fieldset>
+                    <label for="category">Choose a category:</label>
+                    <select required multiple name="category" id="category">
+                      <option value="1">Discussions</option>
+                      <option value="2">Questions</option>
+                      <option value="3">Ideas</option>
+                      <option value="4">Articles</option>
+                      <option value="5">Events</option>
+                      <option value="6">Issues</option>
+                    </select>
+                  </fieldset>
+                <fieldset>
                     <label for="post">Type a text</label>
-                    <textarea name="text" id="post"></textarea>
+                    <textarea required name="text" id="post"></textarea>
                 </fieldset>
                 <button class="button" type="submit">Post</button>
             </form>
