@@ -51,7 +51,6 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(postOrComment, user.ID, commentIdUint, positive)
 		re.serv.React(postOrComment, user.ID, commentIdUint, positive)
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
 	}

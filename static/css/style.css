@@ -504,6 +504,11 @@ html {
     height: 250px;
     padding: 20px;
 }
+
+.post__categories span {
+    margin-left :15px;
+    font-style: normal;
+}
   /*------------------Post---------------------*/
 
 

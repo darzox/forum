@@ -9,30 +9,31 @@ import (
 	"forum/internal/service"
 )
 
-type IndexInterface interface {
+type FilterInterface interface {
 	GetAllPosts() ([]model.PostRepresentation, error)
 }
 
-type Index struct {
+type Filter struct {
 	serv service.Post
 }
 
-func CreateIndexHandler(serv service.Post) *Index {
-	return &Index{
+func CreateFilterHandler(serv service.Post) *Filter {
+	return &Filter{
 		serv: serv,
 	}
 }
 
-func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
-	
-	allposts, err := i.serv.GetAllPosts()
+	r.ParseForm()
+	filterBy := r.FormValue("filter_by")
+	filteredPosts, err := i.serv.FilterAllPosts((filterBy))
 	info := struct {
 		User  *model.User
 		Posts []model.PostRepresentation
 	}{
 		User:  user,
-		Posts: allposts,
+		Posts: filteredPosts,
 	}
 	if err != nil {
 		fmt.Println(err)

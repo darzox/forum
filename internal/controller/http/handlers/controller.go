@@ -26,6 +26,7 @@ type Controller struct {
 	Post
 	CreateComment
 	React
+	Filter
 }
 
 func NewContoller(serv Service) *Controller {
@@ -39,6 +40,7 @@ func NewContoller(serv Service) *Controller {
 		*CreatePostHandler(serv),
 		*CreateCommentHandler(serv),
 		*CreateReactHandler(serv),
+		*CreateFilterHandler(serv),
 	}
 }
 
@@ -55,6 +57,7 @@ func (c *Controller) Run() error {
 	mux.Handle("/create-post", c.AuthMiddleware(c.CreatePost))
 	mux.Handle("/post", c.AuthMiddleware(&c.Post))
 	mux.Handle("/create-comment", &c.CreateComment)
+	mux.Handle("/filter", c.AuthMiddleware(&c.Filter))
 
 	server := http.Server{
 		Addr:    "localhost:8081",
