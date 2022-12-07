@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"forum/internal/model"
@@ -29,11 +30,13 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	filterBy := r.FormValue("filter_by")
 	filteredPosts, err := i.serv.FilterAllPosts((filterBy))
 	info := struct {
-		User  *model.User
-		Posts []model.PostRepresentation
+		User          *model.User
+		Posts         []model.PostRepresentation
+		HeadingFilter string
 	}{
-		User:  user,
-		Posts: filteredPosts,
+		User:          user,
+		Posts:         filteredPosts,
+		HeadingFilter: strings.Title(strings.Replace(filterBy, "_", " ", -1)) + " Posts",
 	}
 	if err != nil {
 		fmt.Println(err)

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 
 	"forum/internal/model"
@@ -127,7 +126,7 @@ func (pr *postRepository) GetPostById(postId uint) (*model.PostRepresentation, e
 					SUM(CASE WHEN positive = false THEN 1 ELSE 0 END) AS dislikes
 					FROM post_like
 					GROUP BY post_id) AS t5 ON t4.post_id = t5.post_id
-									WHERE t4.post_id = ?`
+					WHERE t4.post_id = ?`
 	rows, err := pr.db.Query(records, postId)
 	if err != nil {
 		return nil, err
@@ -216,6 +215,8 @@ func (pr *postRepository) FilterAllPosts(filterBy string) ([]model.PostRepresent
 				LEFT JOIN category ON category.category_id = post_category.category_id`
 	flag := false
 	switch {
+	case filterBy == "recent":
+		records += ` ORDER BY t4.post_id DESC`
 	case filterBy == "oldest":
 		records += ` ORDER BY t4.post_id ASC`
 	case filterBy == "most_disliked":
@@ -263,6 +264,5 @@ func (pr *postRepository) FilterAllPosts(filterBy string) ([]model.PostRepresent
 			allPosts = append(allPosts, tempPost)
 		}
 	}
-	fmt.Println(allPosts)
 	return allPosts, nil
 }

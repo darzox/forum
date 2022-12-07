@@ -25,14 +25,15 @@ func CreateIndexHandler(serv service.Post) *Index {
 
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
-	
 	allposts, err := i.serv.GetAllPosts()
 	info := struct {
-		User  *model.User
-		Posts []model.PostRepresentation
+		User          *model.User
+		Posts         []model.PostRepresentation
+		HeadingFilter string
 	}{
-		User:  user,
-		Posts: allposts,
+		User:          user,
+		Posts:         allposts,
+		HeadingFilter: "Latest Posts",
 	}
 	if err != nil {
 		fmt.Println(err)
