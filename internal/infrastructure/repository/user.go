@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"forum/internal/model"
 )
@@ -68,6 +67,5 @@ func (ur *userRepository) GetUserByUsernameAndPassword(user *model.User) (*model
 	for rows.Next() {
 		rows.Scan(&tempUser.Username, &tempUser.Password, &tempUser.ID)
 	}
-	fmt.Println(&tempUser)
 	return &tempUser, err
 }

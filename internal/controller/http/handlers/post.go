@@ -1,10 +1,9 @@
 package handlers
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"forum/internal/model"
 )
@@ -22,16 +21,22 @@ func CreatePostHandler(serv Service) *Post {
 func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	postIdSting := r.URL.Query().Get("id")
-	postId64, _ := strconv.ParseUint(postIdSting, 10, 32)
+	postId64, err := strconv.ParseUint(postIdSting, 10, 32)
+	if err != nil {
+		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
+		return
+	}
 	postId := uint(postId64)
 
 	post, err := p.serv.GetPostById(postId)
 	if err != nil {
-		fmt.Println(err)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	comments, err := p.serv.GetAllCommentsByPostId(postId)
 	if err != nil {
-		fmt.Println(err)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	info := struct {
 		User     *model.User
@@ -45,7 +50,6 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Comments: comments,
 	}
 	if !ok {
-		fmt.Println("aaaaaaaaaa")
 		info1 := struct {
 			Post     *model.PostRepresentation
 			Auth     bool
@@ -61,11 +65,13 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			},
 		}).ParseFiles("./templates/post.html")
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 		err = t.Execute(w, info1)
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 		return
 	}
@@ -76,7 +82,8 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}).ParseFiles("./templates/post.html")
 	if err != nil {
-		fmt.Println()
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	t.Execute(w, info)
 }

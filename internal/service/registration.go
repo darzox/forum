@@ -24,11 +24,10 @@ func NewRegisterUserService(repo RegisterUser) *RegisterUserService {
 func (rus *RegisterUserService) RegisterUser(user *model.User) error {
 	userFromDB, err := rus.repo.GetUser(user)
 	if err != nil {
-		return err
+		return fmt.Errorf("Internal Server Error")
 	}
 	if userFromDB.Email == user.Email || userFromDB.Username == user.Username {
-		fmt.Println("aaa")
-		return fmt.Errorf("user already exists")
+		return fmt.Errorf("User with this email or username already exists")
 	}
 	return rus.repo.CreateUser(user)
 }

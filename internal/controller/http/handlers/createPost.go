@@ -1,10 +1,9 @@
 package handlers
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"forum/internal/model"
 	"forum/internal/service"
@@ -24,12 +23,13 @@ func (cp CreatePost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	if r.Method == http.MethodGet {
 		if !ok {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			errorPage(http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized, w)
 			return
 		}
 		t, err := template.ParseFiles("./templates/createPostAuth.html")
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 		t.Execute(w, user.Username)
 	}
@@ -41,26 +41,20 @@ func (cp CreatePost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Text:    postInfo["text"][0],
 		}
 		postId, err := cp.serv.CreatePost(post.Heading, post.Text, user.ID)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
 		categories := postInfo["category"]
 		for _, categoryId := range categories {
 			categoryIdUint, _ := strconv.ParseUint(categoryId, 10, 32)
 			_, err := cp.serv.AddCategoryToPost(uint(categoryIdUint), postId)
 			if err != nil {
-				fmt.Println(err)
+				errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+				return
 			}
 		}
 		postIdString := strconv.FormatUint(uint64(postId), 10)
-		if err != nil {
-			fmt.Println(err)
-		}
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
 	}
 }
-
-// func CreatePost(w http.ResponseWriter, r *http.Request) {
-// 	t, err := template.ParseFiles("./templates/createPost.html")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	t.Execute(w, nil)
-// }

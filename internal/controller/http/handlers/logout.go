@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strings"
 
@@ -30,13 +28,13 @@ func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cookieFromClient = strings.ReplaceAll(cookieFromClient, "Session-token=", "")
 	user, err := l.service.UserBySession(cookieFromClient)
 	if err != nil {
-		fmt.Println(err)
-		http.Redirect(w, r, "/err", http.StatusSeeOther)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	err = l.service.DeleteSession(user.ID)
 	if err != nil {
-		fmt.Println(err)
-		http.Redirect(w, r, "/err", http.StatusSeeOther)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	t, err := template.New("index.html").Funcs(template.FuncMap{
 		"sub": func(a, b int) int {
@@ -44,7 +42,8 @@ func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}).ParseFiles("./templates/index.html")
 	if err != nil {
-		log.Fatal(err)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	t.Execute(w, nil)
 }

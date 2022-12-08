@@ -537,3 +537,7 @@ a.personal__liked {
 a.personal__created {
     color: #3f69d4;
 }
+
+h2.error__heading {
+    font-size: 170px;
+}

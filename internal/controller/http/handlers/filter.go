@@ -1,10 +1,9 @@
 package handlers
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 	"strings"
-	"text/template"
 
 	"forum/internal/model"
 	"forum/internal/service"
@@ -33,12 +32,14 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if filterBy == "i_liked" || filterBy == "i_created" {
 		filteredPosts, err = i.serv.PersonalFilter(filterBy, user.ID)
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 	} else {
 		filteredPosts, err = i.serv.FilterAllPosts((filterBy))
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 	}
 
@@ -51,9 +52,6 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Posts:         filteredPosts,
 		HeadingFilter: strings.Title(strings.Replace(filterBy, "_", " ", -1)) + " Posts",
 	}
-	if err != nil {
-		fmt.Println(err)
-	}
 	if !ok {
 		t, err := template.New("index.html").Funcs(template.FuncMap{
 			"sub": func(a, b int) int {
@@ -61,7 +59,8 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			},
 		}).ParseFiles("./templates/index.html")
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 		t.Execute(w, info)
 		return
@@ -72,7 +71,8 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}).ParseFiles("./templates/indexAuthorized.html")
 	if err != nil {
-		fmt.Println(err)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	t.Execute(w, info)
 }

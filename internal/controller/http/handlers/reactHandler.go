@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -29,29 +28,41 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if postOrComment == "post" {
 		postIdString := r.Form["postId"][0]
 		postId, err := strconv.Atoi(r.Form["postId"][0])
-		postIdUint := uint(postId)
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+			return
 		}
+		postIdUint := uint(postId)
 		positive, err := strconv.ParseBool(r.Form["positive"][0])
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+			return
 		}
-		re.serv.React(postOrComment, user.ID, postIdUint, positive)
+		_, err = re.serv.React(postOrComment, user.ID, postIdUint, positive)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
 	}
 	if postOrComment == "comment" {
 		postIdString := r.Form["postId"][0]
 		commentId, err := strconv.Atoi(r.Form["commentId"][0])
-		commentIdUint := uint(commentId)
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+			return
 		}
+		commentIdUint := uint(commentId)
 		positive, err := strconv.ParseBool(r.Form["positive"][0])
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+			return
 		}
-		re.serv.React(postOrComment, user.ID, commentIdUint, positive)
+		_, err = re.serv.React(postOrComment, user.ID, commentIdUint, positive)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
 	}
 }

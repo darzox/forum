@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"fmt"
-	"log"
+	"html/template"
 	"net/http"
-	"text/template"
 
 	"forum/internal/model"
 )
@@ -27,11 +25,16 @@ func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		t, err := template.ParseFiles("./templates/signupPage.html")
 		if err != nil {
-			log.Fatal(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
-		t.Execute(w, nil)
-	}
-	if r.Method == http.MethodPost {
+		err = t.Execute(w, nil)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
+		return
+	} else if r.Method == http.MethodPost {
 		r.ParseForm()
 		userInfo := r.PostForm
 		user := model.User{
@@ -41,9 +44,11 @@ func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		err := su.service.RegisterUser(&user)
 		if err != nil {
-			fmt.Println(err)
-			http.Redirect(w, r, "/err", http.StatusSeeOther)
+			errorPage(err.Error(), http.StatusUnauthorized, w)
+			return
 		}
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
 	}
+	errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
 }

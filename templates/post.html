@@ -97,7 +97,7 @@
         <form class="form main-create-new-comment" action="/create-comment" method="post">
           <fieldset>
             <label for="comment">Type a comment</label>
-            <textarea required name="comment" id="comment"></textarea>
+            <textarea required name="comment" id="comment" minlength="6" maxlength="400" ></textarea>
           </fieldset>
           <input type="hidden" name="postId" value="{{.Post.PostId}}">
           <input type="hidden" name="userId" value="{{.User.ID}}">

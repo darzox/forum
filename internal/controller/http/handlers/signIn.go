@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"fmt"
-	"log"
+	"html/template"
 	"net/http"
-	"text/template"
 	"time"
 
 	"forum/internal/model"
@@ -29,33 +27,35 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		t, err := template.ParseFiles("./templates/signinPage.html")
 		if err != nil {
-			log.Fatal(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
-		t.Execute(w, nil)
+		err = t.Execute(w, nil)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
+		return
 	}
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 		userInfo := r.PostForm
-		fmt.Println(userInfo)
 		user := model.User{
 			Username: userInfo["username"][0],
 			Password: userInfo["password"][0],
 		}
-		fmt.Println(user)
-		fmt.Println("-----")
 		userId, userLogined, err := si.service.LoginUser(&user)
 		if err != nil {
-			fmt.Println(err)
-			http.Redirect(w, r, "/err", http.StatusSeeOther)
+			errorPage(err.Error(), http.StatusUnauthorized, w)
+			return
 		}
-		fmt.Println(userLogined)
 		user.ID = userId
 		if userLogined {
 			// Create session
 			cookie, err := si.service.SessionCreate(&user)
 			if err != nil {
-				fmt.Println(err)
-				http.Redirect(w, r, "err", http.StatusSeeOther)
+				errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+				return
 			}
 			cookieExpiresAt := time.Now().Add(600 * time.Second)
 			http.SetCookie(w, &http.Cookie{
@@ -67,5 +67,7 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else {
 			http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		}
+		return
 	}
+	errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
 }

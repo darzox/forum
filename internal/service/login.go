@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"forum/internal/model"
 )
 
@@ -21,10 +23,10 @@ func NewLoginUserService(repo LoginUser) *LoginUserService {
 func (lus *LoginUserService) LoginUser(user *model.User) (uint, bool, error) {
 	userFromDB, err := lus.repo.GetUserByUsernameAndPassword(user)
 	if err != nil {
-		return 0, false, err
+		return 0, false, fmt.Errorf("Internal server error")
 	}
 	if user.Username == userFromDB.Username && user.Password == userFromDB.Password {
 		return userFromDB.ID, true, nil
 	}
-	return 0, false, err
+	return 0, false, fmt.Errorf("Username or password is not correct")
 }

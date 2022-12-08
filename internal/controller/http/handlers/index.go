@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
-	"text/template"
 
 	"forum/internal/model"
 	"forum/internal/service"
@@ -24,8 +23,16 @@ func CreateIndexHandler(serv service.Post) *Index {
 }
 
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
+		return
+	}
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	allposts, err := i.serv.GetAllPosts()
+	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
 	info := struct {
 		User          *model.User
 		Posts         []model.PostRepresentation
@@ -35,9 +42,6 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Posts:         allposts,
 		HeadingFilter: "Latest Posts",
 	}
-	if err != nil {
-		fmt.Println(err)
-	}
 	if !ok {
 		t, err := template.New("index.html").Funcs(template.FuncMap{
 			"sub": func(a, b int) int {
@@ -45,7 +49,8 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			},
 		}).ParseFiles("./templates/index.html")
 		if err != nil {
-			fmt.Println(err)
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
 		}
 		t.Execute(w, info)
 		return
@@ -56,7 +61,8 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}).ParseFiles("./templates/indexAuthorized.html")
 	if err != nil {
-		fmt.Println(err)
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
 	}
 	t.Execute(w, info)
 }

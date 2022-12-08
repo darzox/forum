@@ -31,7 +31,7 @@
             <form class="form main-create-post" action="/create-post" method="post">
                 <fieldset>
                     <label for="heading">Heading</label>
-                    <input required type="text" name="heading" id="heading"></input>
+                    <input required type="text" name="heading" id="heading" maxlength="30" title="Heading must be lower thab 30 characters long"></input>
                 </fieldset>
                 <fieldset>
                     <label for="category">Choose a category:</label>
@@ -46,7 +46,7 @@
                   </fieldset>
                 <fieldset>
                     <label for="post">Type a text</label>
-                    <textarea required name="text" id="post"></textarea>
+                    <textarea required name="text" id="post" minlength="6" maxlength="1500" title="Post must be between 6 and 1500 characters long"></textarea>
                 </fieldset>
                 <button class="button" type="submit">Post</button>
             </form>
