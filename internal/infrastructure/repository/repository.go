@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"forum/internal/storage"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Repository struct {

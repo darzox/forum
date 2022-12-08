@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"forum/internal/app"
-	"forum/internal/storage"
 )
 
 func main() {
-	storage.RunDb()
-	app.Run()
-	fmt.Println("server started at http://localhost:8080/")
+	fmt.Println("server started at http://localhost:8081/")
+	err := app.Run()
+	if err != nil {
+		log.Fatalf(err.Error(), err)
+	}
 }

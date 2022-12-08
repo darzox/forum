@@ -8,6 +8,7 @@ type Post interface {
 	GetPostById(postId uint) (*model.PostRepresentation, error)
 	AddCategoryToPost(categoryId uint, postId uint) (uint, error)
 	FilterAllPosts(filterBy string) ([]model.PostRepresentation, error)
+	PersonalFilter(filterBy string, userId uint) ([]model.PostRepresentation, error)
 }
 
 type PostService struct {
@@ -38,4 +39,8 @@ func (ps *PostService) AddCategoryToPost(categoryId uint, postId uint) (uint, er
 
 func (ps *PostService) FilterAllPosts(filterBy string) ([]model.PostRepresentation, error) {
 	return ps.repo.FilterAllPosts(filterBy)
+}
+
+func (ps *PostService) PersonalFilter(filterBy string, userId uint) ([]model.PostRepresentation, error) {
+	return ps.repo.PersonalFilter(filterBy, userId)
 }

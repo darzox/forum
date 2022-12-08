@@ -529,3 +529,11 @@ select option {
 .form label {
     margin-left: 10px;
 }
+
+a.personal__liked {
+    color: #3fd467
+}
+
+a.personal__created {
+    color: #3f69d4;
+}

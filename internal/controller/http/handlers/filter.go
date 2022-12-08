@@ -25,10 +25,23 @@ func CreateFilterHandler(serv service.Post) *Filter {
 }
 
 func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var err error
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	r.ParseForm()
 	filterBy := r.FormValue("filter_by")
-	filteredPosts, err := i.serv.FilterAllPosts((filterBy))
+	var filteredPosts []model.PostRepresentation
+	if filterBy == "i_liked" || filterBy == "i_created" {
+		filteredPosts, err = i.serv.PersonalFilter(filterBy, user.ID)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		filteredPosts, err = i.serv.FilterAllPosts((filterBy))
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 	info := struct {
 		User          *model.User
 		Posts         []model.PostRepresentation

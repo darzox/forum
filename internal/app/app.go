@@ -8,10 +8,11 @@ import (
 	"forum/internal/service"
 )
 
-func Run() {
+func Run() error {
 	db, err := repository.RunDb()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("a")
+		return err
 	}
 	defer db.Close()
 
@@ -22,6 +23,7 @@ func Run() {
 	control := handlers.NewContoller(service)
 
 	if err := control.Run(); err != nil {
-		fmt.Println(err)
+		return err
 	}
+	return nil
 }

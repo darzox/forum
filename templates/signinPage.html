@@ -18,13 +18,17 @@
             <form class="form main-sign-in" action="/signin" method="post">
                 <fieldset>
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username">
+                    <input type="text" name="username" id="username" title="Username must be between 6 to 20 characters long" required pattern="[A-Za-z0-9\-_\.]{6,20}">
                 </fieldset>
                 <fieldset>
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password">
+                    <input type="password" name="password" id="password" title ="At least 1 Uppercase
+At least 1 Lowercase
+At least 1 Number
+At least 1 Symbol, symbol allowed --> !@#$%^&*_=+-
+Min 8 chars" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,120}$">
                 </fieldset>
-                <button class="button" type="submit">Register</button>
+                <button class="button" type="submit">Login</button>
             </form>
     </main>
     <footer class="footer">
