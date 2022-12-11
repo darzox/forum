@@ -31,11 +31,29 @@ func (cp CreatePost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 			return
 		}
-		t.Execute(w, user.Username)
+		err = t.Execute(w, user.Username)
+		if err != nil {
+			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+			return
+		}
+		return
 	}
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 		postInfo := r.PostForm
+		for key := range postInfo {
+			if !contains([]string{"category", "text", "heading"}, key) {
+				errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+				return
+			}
+		}
+		values := r.Form["category"]
+		for _, value := range values {
+			if !contains([]string{"1", "2", "3", "4", "5", "6"}, value) {
+				errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+				return
+			}
+		}
 		post := model.PostRepresentation{
 			Heading: postInfo["heading"][0],
 			Text:    postInfo["text"][0],
@@ -56,5 +74,9 @@ func (cp CreatePost) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		postIdString := strconv.FormatUint(uint64(postId), 10)
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
+		return
+	} else {
+		errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
+		return
 	}
 }

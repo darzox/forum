@@ -24,11 +24,19 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized, w)
 		return
 	}
-	if r.Method == http.MethodHead || r.Method != http.MethodPost {
+	if r.Method != http.MethodPost {
+		fmt.Println("a")
 		errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
 		return
 	}
 	r.ParseForm()
+	for key := range r.PostForm {
+		if !contains([]string{"positive", "postId", "reactTo", "commentId"}, key) {
+
+			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+			return
+		}
+	}
 	postOrComment := r.PostForm["reactTo"][0]
 	if postOrComment == "post" {
 		postIdString := r.Form["postId"][0]
@@ -49,6 +57,7 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
+		return
 	}
 	if postOrComment == "comment" {
 		postIdString := r.Form["postId"][0]
@@ -60,7 +69,7 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		commentIdUint := uint(commentId)
 		positive, err := strconv.ParseBool(r.Form["positive"][0])
 		if err != nil {
-			fmt.Println("aa")
+			fmt.Println("a")
 			errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
 			return
 		}
@@ -70,5 +79,6 @@ func (re React) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		http.Redirect(w, r, "/post?id="+postIdString, http.StatusSeeOther)
+		return
 	}
 }

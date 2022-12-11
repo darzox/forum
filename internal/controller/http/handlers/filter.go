@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -36,12 +35,11 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
 		return
 	}
-	value, _ := r.Form["filter_by"]
-	if !contains([]string{"oldest", "recent", "most_disliked", "most_liked", "discussions", "questions", "ideas", "articles", "events", "issues"}, value[0]) {
+	value := r.Form["filter_by"]
+	if !contains([]string{"oldest", "recent", "most_disliked", "most_liked", "discussions", "questions", "ideas", "articles", "events", "issues", "i_liked", "i_created"}, value[0]) {
 		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
 		return
 	}
-	fmt.Println(r.Form)
 	filterBy := r.FormValue("filter_by")
 	var filteredPosts []model.PostRepresentation
 	if filterBy == "i_liked" || filterBy == "i_created" {

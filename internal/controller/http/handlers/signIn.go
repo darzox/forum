@@ -40,6 +40,12 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 		userInfo := r.PostForm
+		for key := range r.PostForm {
+			if !contains([]string{"username", "password"}, key) {
+				errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+				return
+			}
+		}
 		user := model.User{
 			Username: userInfo["username"][0],
 			Password: userInfo["password"][0],

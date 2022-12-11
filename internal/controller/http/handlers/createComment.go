@@ -25,6 +25,18 @@ func (cc CreateComment) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	commentInfo := r.PostForm
+	if _, ok := r.Form["comment"]; !ok {
+		errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+		return
+	}
+	if _, ok := r.Form["postId"]; !ok {
+		errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+		return
+	}
+	if _, ok := r.Form["userId"]; !ok {
+		errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+		return
+	}
 	postIdString := commentInfo["postId"][0]
 	postId64, err := strconv.ParseUint(postIdString, 10, 32)
 	if err != nil {

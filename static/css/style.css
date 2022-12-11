@@ -2,6 +2,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
 
+textarea {
+    resize: none;
+  }
+
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -394,6 +398,8 @@ html {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 10px solid #3fd467;
+
+    cursor: pointer;
   }
 
   .main-post .like-down-post {
@@ -408,6 +414,8 @@ html {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 10px solid #d92a1c;
+
+    cursor: pointer;
   }
 
 
@@ -495,6 +503,8 @@ html {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 10px solid #3fd467;
+
+    cursor: pointer;
   }
 
 .like-down-comment {
@@ -509,6 +519,8 @@ html {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 10px solid #d92a1c;
+
+    cursor: pointer;
   }
 
 .new-comment .form {

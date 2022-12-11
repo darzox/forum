@@ -37,6 +37,12 @@ func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		r.ParseForm()
 		userInfo := r.PostForm
+		for key := range r.PostForm {
+			if !contains([]string{"email", "username", "password"}, key) {
+				errorPage(http.StatusText(http.StatusBadRequest), http.StatusBadRequest, w)
+				return
+			}
+		}
 		user := model.User{
 			Email:    userInfo["email"][0],
 			Username: userInfo["username"][0],
