@@ -63,8 +63,18 @@
           <footer class="post__footer">
             <span class="post__info-likes">Likes: {{ sub .Post.AmountLikes .Post.AmountDisLikes}}</span>
             {{if .Auth}}
-            <a class="like-up-post" href="/likeup?postId={{.Post.PostId}}&positive=true&reactTo=post"></a>
-            <a class="like-down-post" href="/likedown?postId={{.Post.PostId}}&positive=false&reactTo=post"></a>
+            <form action="/likeup" method="post">
+              <button class="like-up-post" type="submit"></button>
+              <input type="hidden" name="postId" value="{{.Post.PostId}}">
+              <input type="hidden" name="positive" value="true">
+              <input type="hidden" name="reactTo" value="post">
+            </form>
+            <form action="/likedown" method="post">
+              <button class="like-down-post" type="submit"></button>
+              <input type="hidden" name="postId" value="{{.Post.PostId}}">
+              <input type="hidden" name="positive" value="false">
+              <input type="hidden" name="reactTo" value="post">
+            </form>
             {{end}}
           </footer>
         </article>
@@ -83,8 +93,20 @@
               <footer class="comment__footer">
                 <span class="comment__info-likes">Likes: {{sub .AmountLikes .AmountDisLikes}}</span>
                 {{if $authPerson}}
-                <a class="like-up-post" href="/likeup?postId={{.PostId}}&commentId={{.CommentId}}&positive=true&reactTo=comment"></a>
-                <a class="like-down-post" href="/likedown?postId={{.PostId}}&commentId={{.CommentId}}&positive=false&reactTo=comment"></a>
+                <form action="/likeup" method="post">
+                  <button class="like-up-comment" type="submit"></button>
+                  <input type="hidden" name="postId" value="{{.PostId}}">
+                  <input type="hidden" name="commentId" value="{{.CommentId}}">
+                  <input type="hidden" name="positive" value="true">
+                  <input type="hidden" name="reactTo" value="comment">
+                </form>
+                <form action="/likedown" method="post">
+                  <button class="like-down-comment" type="submit"></button>
+                  <input type="hidden" name="postId" value="{{.PostId}}">
+                  <input type="hidden" name="commentId" value="{{.CommentId}}">
+                  <input type="hidden" name="positive" value="false">
+                  <input type="hidden" name="reactTo" value="comment">
+                </form>
                 {{end}}
               </footer>
             </article>

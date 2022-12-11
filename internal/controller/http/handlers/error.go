@@ -20,5 +20,9 @@ func errorPage(errorType string, code int, w http.ResponseWriter) {
 		Err:  errorType,
 		Code: code,
 	}
-	t.Execute(w, data)
+	err = t.Execute(w, data)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
+	}
 }

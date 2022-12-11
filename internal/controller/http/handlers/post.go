@@ -19,10 +19,19 @@ func CreatePostHandler(serv Service) *Post {
 }
 
 func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
+		return
+	}
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	postIdSting := r.URL.Query().Get("id")
-	postId64, err := strconv.ParseUint(postIdSting, 10, 32)
+	allPosts, err := p.serv.GetAllPosts()
 	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
+	postId64, err := strconv.ParseUint(postIdSting, 10, 32)
+	if err != nil || postId64 == 0 || int(postId64) > len(allPosts) {
 		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
 		return
 	}
@@ -85,5 +94,9 @@ func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 		return
 	}
-	t.Execute(w, info)
+	err = t.Execute(w, info)
+	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
 }

@@ -64,5 +64,9 @@ func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 		return
 	}
-	t.Execute(w, info)
+	err = t.Execute(w, info)
+	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
 }

@@ -24,6 +24,10 @@ func CreateLogoutHandler(service Leaving) *Logout {
 }
 
 func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
+		return
+	}
 	cookieFromClient := r.Header.Get("Cookie")
 	cookieFromClient = strings.ReplaceAll(cookieFromClient, "Session-token=", "")
 	user, err := l.service.UserBySession(cookieFromClient)
@@ -45,5 +49,9 @@ func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 		return
 	}
-	t.Execute(w, nil)
+	err = t.Execute(w, nil)
+	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
 }

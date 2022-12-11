@@ -60,7 +60,7 @@ func (c *Controller) Run() error {
 	mux.Handle("/filter", c.AuthMiddleware(&c.Filter))
 
 	server := http.Server{
-		Addr:    "localhost:8081",
+		Addr:    ":8081",
 		Handler: mux,
 	}
 

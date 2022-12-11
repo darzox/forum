@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -24,9 +25,23 @@ func CreateFilterHandler(serv service.Post) *Filter {
 }
 
 func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
+		return
+	}
 	var err error
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
 	r.ParseForm()
+	if _, ok := r.Form["filter_by"]; !ok {
+		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
+		return
+	}
+	value, _ := r.Form["filter_by"]
+	if !contains([]string{"oldest", "recent", "most_disliked", "most_liked", "discussions", "questions", "ideas", "articles", "events", "issues"}, value[0]) {
+		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
+		return
+	}
+	fmt.Println(r.Form)
 	filterBy := r.FormValue("filter_by")
 	var filteredPosts []model.PostRepresentation
 	if filterBy == "i_liked" || filterBy == "i_created" {
@@ -74,5 +89,18 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 		return
 	}
-	t.Execute(w, info)
+	err = t.Execute(w, info)
+	if err != nil {
+		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
+		return
+	}
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
