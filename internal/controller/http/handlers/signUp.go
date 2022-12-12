@@ -22,6 +22,11 @@ func CreateSignUpHandler(service Registration) *SignUp {
 }
 
 func (su *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	_, ok := r.Context().Value("authorizedUser").(*model.User)
+	if ok {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 	if r.Method == http.MethodGet {
 		t, err := template.ParseFiles("./templates/signupPage.html")
 		if err != nil {

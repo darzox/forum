@@ -23,13 +23,17 @@ func CreateFilterHandler(serv service.Post) *Filter {
 	}
 }
 
-func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (f Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		errorPage(http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed, w)
 		return
 	}
 	var err error
 	user, ok := r.Context().Value("authorizedUser").(*model.User)
+	if !ok {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 	r.ParseForm()
 	if _, ok := r.Form["filter_by"]; !ok {
 		errorPage(http.StatusText(http.StatusNotFound), http.StatusNotFound, w)
@@ -43,13 +47,13 @@ func (i Filter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	filterBy := r.FormValue("filter_by")
 	var filteredPosts []model.PostRepresentation
 	if filterBy == "i_liked" || filterBy == "i_created" {
-		filteredPosts, err = i.serv.PersonalFilter(filterBy, user.ID)
+		filteredPosts, err = f.serv.PersonalFilter(filterBy, user.ID)
 		if err != nil {
 			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 			return
 		}
 	} else {
-		filteredPosts, err = i.serv.FilterAllPosts((filterBy))
+		filteredPosts, err = f.serv.FilterAllPosts((filterBy))
 		if err != nil {
 			errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 			return

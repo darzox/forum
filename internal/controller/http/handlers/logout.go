@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"html/template"
 	"net/http"
 	"strings"
 
@@ -40,18 +39,5 @@ func (l Logout) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
 		return
 	}
-	t, err := template.New("index.html").Funcs(template.FuncMap{
-		"sub": func(a, b int) int {
-			return a - b
-		},
-	}).ParseFiles("./templates/index.html")
-	if err != nil {
-		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
-		return
-	}
-	err = t.Execute(w, nil)
-	if err != nil {
-		errorPage(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError, w)
-		return
-	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

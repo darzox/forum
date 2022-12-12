@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"forum/internal/service"
 )
@@ -52,16 +53,19 @@ func (c *Controller) Run() error {
 	mux.Handle("/likedown", c.AuthMiddleware(c.React))
 	mux.Handle("/", c.AuthMiddleware(&c.Index))
 	mux.Handle("/logout", &c.Logout)
-	mux.Handle("/signup", &c.SignUp)
-	mux.Handle("/signin", &c.SingIn)
+	mux.Handle("/signup", c.AuthMiddleware(&c.SignUp))
+	mux.Handle("/signin", c.AuthMiddleware(&c.SingIn))
 	mux.Handle("/create-post", c.AuthMiddleware(c.CreatePost))
 	mux.Handle("/post", c.AuthMiddleware(&c.Post))
 	mux.Handle("/create-comment", &c.CreateComment)
 	mux.Handle("/filter", c.AuthMiddleware(&c.Filter))
 
 	server := http.Server{
-		Addr:    ":8081",
-		Handler: mux,
+		Addr:           ":8081",
+		Handler:        mux,
+		ReadTimeout:    time.Second * 10,
+		WriteTimeout:   time.Second * 10,
+		MaxHeaderBytes: 1 << 20,
 	}
 
 	err := server.ListenAndServe()
