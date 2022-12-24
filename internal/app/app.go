@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"forum/internal/controller/http/handlers"
 	"forum/internal/infrastructure/repository"
 	"forum/internal/service"
@@ -11,7 +9,6 @@ import (
 func Run() error {
 	db, err := repository.RunDb()
 	if err != nil {
-		fmt.Println("a")
 		return err
 	}
 	defer db.Close()

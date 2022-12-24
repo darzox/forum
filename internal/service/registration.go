@@ -31,3 +31,5 @@ func (rus *RegisterUserService) RegisterUser(user *model.User) error {
 	}
 	return rus.repo.CreateUser(user)
 }
+
+
