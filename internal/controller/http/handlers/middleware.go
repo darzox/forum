@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"strings"
 	"time"
 
 	"forum/internal/model"
@@ -26,12 +25,12 @@ func CreateMiddleware(service Auth) *Middleware {
 
 func (m *Middleware) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookieFromClient := r.Header.Get("Cookie")
-		if cookieFromClient == "" {
+		c, err := r.Cookie("session_token")
+		if err != nil {
 			next.ServeHTTP(w, r)
 			return
 		}
-		cookieFromClient = strings.ReplaceAll(cookieFromClient, "Session-token=", "")
+		cookieFromClient := c.Value
 		ok, err := m.service.SessionCheck(cookieFromClient)
 		if err != nil {
 			next.ServeHTTP(w, r)
@@ -44,7 +43,7 @@ func (m *Middleware) AuthMiddleware(next http.Handler) http.Handler {
 		// Refresh cookie expire time after cookie has found
 		cookieExpiresAt := time.Now().Add(600 * time.Second)
 		http.SetCookie(w, &http.Cookie{
-			Name:    "Session-token",
+			Name:    "session_token",
 			Value:   cookieFromClient,
 			Expires: cookieExpiresAt,
 		})

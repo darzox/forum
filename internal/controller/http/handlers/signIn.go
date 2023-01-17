@@ -70,7 +70,7 @@ func (si *SingIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			cookieExpiresAt := time.Now().Add(600 * time.Second)
 			http.SetCookie(w, &http.Cookie{
-				Name:    "Session-token",
+				Name:    "session_token",
 				Value:   cookie,
 				Expires: cookieExpiresAt,
 			})
